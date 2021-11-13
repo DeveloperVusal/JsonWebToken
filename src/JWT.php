@@ -6,6 +6,7 @@ namespace Vudev\JsonWebToken;
 use Vudev\JsonWebToken\Algorithm\HashHmac;
 use Vudev\JsonWebToken\Algorithm\OpenSSL;
 use Vudev\JsonWebToken\Algorithm\Base64;
+use Vudev\JsonWebToken\DateConvert;
 
 /**
  * Create JWT pair tokens
@@ -106,10 +107,14 @@ class JWT {
 	 * @access public
 	 * @return void
 	 */
-	public function createToken(): string
+	public function createToken(array $options = []): string
 	{
-		$exp = (!empty($this->payload['exp'])) ? $this->payload['exp'] : (time() + (60 * 30));
+		if (isset($options['payload']) && sizeof($options['payload'])) $this->setPayload($options['payload']);
+		if (isset($options['header']) && sizeof($options['header'])) $this->setHeader($options['header']);
+		if (isset($options['secret']) && sizeof($options['secret'])) $this->setSecret($options['secret']);
 
+		$exp = (!empty($this->payload['exp'])) ? $this->payload['exp'] : (time() + (60 * 30));
+		
 		if (!empty($this->payload['expiresIn'])) $exp = DateConvert::to_unixtime($this->payload['expiresIn']);
 		
 		unset($this->payload['expiresIn']);
@@ -176,5 +181,53 @@ class JWT {
 		}
 
 		return ($verifySign) ? true : false;
+	}
+
+	/**
+	 * Update property payloads
+	 * 
+	 * @param array $payload
+	 * @access protected
+	 * @return void
+	 */
+	protected function setPayload(array $payload)
+	{
+		$this->payload = $payload;
+	}
+
+	/**
+	 * Update property headers
+	 * 
+	 * @param array $header
+	 * @access protected
+	 * @return void
+	 */
+	protected function setHeader(array $header)
+	{
+		$this->header = $header;
+		$this->hash_algo = strtoupper((!empty($this->header['alg'])) ? $this->header['alg'] : 'HS256');
+	}
+
+	/**
+	 * Update property secret
+	 * 
+	 * @param mixed $secret
+	 * @access protected
+	 * @return void
+	 */
+	protected function setSecret($secret)
+	{
+		$funcAlgo = JWT::ALGRORITMS[$this->hash_algo][0];
+
+		switch ($funcAlgo) {
+			case 'hash_hmac':
+				$this->secret = $secret;
+
+				break;
+			case 'openssl':
+				$this->private_key = $secret;
+
+				break;
+		}
 	}
 }
