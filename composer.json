@@ -1,0 +1,22 @@
+{
+	"name": "vudev/jsonwebtoken",
+	"description": "This library is designed to generate JWT tokens.",
+	"version": "v0.0.1",
+	"readme": "./README.md",
+    "license": "MIT",
+    "minimum-stability": "stable",
+    "authors": [
+        {
+            "name": "Mamedov Vusal",
+            "homepage": "https://vusal.website"
+        }
+    ],
+    "require": {
+        "php": ">=7.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Vudev\\JsonWebToken\\": "src/"
+        }
+    }
+}
