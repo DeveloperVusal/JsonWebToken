@@ -27,6 +27,15 @@ class JWT {
 	];
 
 	/**
+	 * Dynamic payload
+	 * 
+	 * Most likely will change with each release
+	 */
+	const dynamic_payload = [
+		'expiresIn'
+	];
+
+	/**
 	 * Header JWT Token
 	 * 
 	 * @access protected
@@ -86,7 +95,7 @@ class JWT {
 	 */
 	public function __construct(array $options)
 	{
-		if (sizeof($options['header'])) $this->header = $options['header'];
+		if (isset($options['header']) && sizeof($options['header'])) $this->header = $options['header'];
 
 		$this->payload = $options['payload'];
 		$this->secret = $options['secret'];
@@ -192,7 +201,19 @@ class JWT {
 	 */
 	protected function setPayload(array $payload)
 	{
-		$this->payload = $payload;
+		$searchs = [];
+
+		foreach ($payload as $key => $val) {
+			$searchs[$key] = false;
+
+			foreach ($this->payload as $key2 => $val2) {
+				if ($key === $key2) $searchs[$key] = true;
+			}
+		}
+
+		foreach ($searchs as $key => $val) {
+			$this->payload[$key] = $payload[$key];
+		}
 	}
 
 	/**
@@ -204,7 +225,24 @@ class JWT {
 	 */
 	protected function setHeader(array $header)
 	{
-		$this->header = $header;
+		$searchs = [];
+
+		foreach ($header as $key => $val) {
+			$searchs[$key] = false;
+
+			foreach ($this->header as $key2 => $val2) {
+				if ($key === $key2) $searchs[$key] = true;
+			}
+		}
+
+		foreach ($searchs as $key => $val) {
+			if ($val) {
+				$this->header[$key] = $header[$key];
+			} else {
+				$this->header[] = $header[$key];
+			}
+		}
+
 		$this->hash_algo = strtoupper((!empty($this->header['alg'])) ? $this->header['alg'] : 'HS256');
 	}
 
