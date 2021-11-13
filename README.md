@@ -12,13 +12,26 @@ composer require vudev/jsonwebtoken
 
 ## Example
 ```php
-$jwt = new JWT([
-    'iss' => 'JWT PHP',
-    'sub' => 'Auth',
-    'expiresIn' => '15min',
-    'user_id'=> '1'
-]);
-$access_token = $jwt->createToken();
+$secret_key = 'one unique secret key';
 
-// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE2MzY4MzY4MjksImlhdCI6MTYzNjgzNjgxNH0.7fbfd55b16f88ac056d1224a3cd1989085f59abdc1f8ba62c58c7dddfb4b46a1
+$jwt = new JWT([
+    'payload' => [
+        'user_id' => 1,
+        'expiresIn' => '15min'
+    ],
+    'secret' => $secret_key
+]);
+
+$access_token = $jwt->createToken();
+$refresh_token = $jwt->createToken([
+    'payload' => [
+        'user_id' => 1,
+        'expiresIn' => '30d'
+    ]
+]);
+```
+```
+access_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE2MzY4NDMxOTMsImlhdCI6MTYzNjg0MzE3OH0.b97902961abb8287dc952abe4e69e04ca91795e445bbeec9954344daf09f325d
+
+refresh_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE2Mzk0MzUxNzgsImlhdCI6MTYzNjg0MzE3OH0.9ae083d10593249270aab2eac84f1c848cc042aef9dc679d2d7130c436942907
 ```
