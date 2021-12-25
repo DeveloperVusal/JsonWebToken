@@ -97,8 +97,8 @@ class JWT {
 	{
 		if (isset($options['header']) && sizeof($options['header'])) $this->header = $options['header'];
 
-		$this->payload = $options['payload'];
-		$this->secret = $options['secret'];
+		if (isset($options['payload']) && sizeof($options['payload'])) $this->payload = $options['payload'];
+		if (isset($options['secret']) && sizeof($options['secret'])) $this->secret = $options['secret'];
 
 		$this->hash_algo = strtoupper((!empty($this->header['alg'])) ? $this->header['alg'] : 'HS256');
 
