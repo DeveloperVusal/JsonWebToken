@@ -10,7 +10,40 @@ composer require vudev/jsonwebtoken
 
 <br>
 
-## Example
+## Description
+### Syntax
+```php
+$jwt = new JWT([
+    'payload' => [
+        'user_id' => 1,
+        'expiresIn' => '15min'
+    ],
+    'secret' => 'NWPnXk>l^{TVhaU'
+]);
+```
+
+<br>
+
+### Object options
+| Name        | Type | Default | Required | Description |
+| ----------- | ---- | ------- | -------- | ----------- |
+| payload     | array | [] | required  | Useful data that is stored inside the JWT. This data is also called JWT-claims (applications) |
+| secret      | string | '' | required  | Secret key for `hash_hmac` |
+| header      | array | ['alg' => 'HS256', 'typ'=> 'JWT'] | optional  | Сontains information about how the JWT signature should be calculated |
+| public_key  | string - a PEM formatted key | '' | optional  | OpenSSLAsymmetricKey - a key, returned by openssl_get_publickey() |
+| private_key | string - a PEM formatted key | '' | optional  | OpenSSLAsymmetricKey -  a key, returned by openssl_get_privatekey() |
+
+<br>
+
+### Methods
+| Name        | Arguments | Description                |
+| ----------- | ------- | ---------------------------- |
+| createToken | $options — as options of the JWT object | Creating access or refresh tokens |
+| verifyToken | $token — data type string | Checking tokens for validity      |
+
+<br>
+
+## Example with hash_hmac
 ```php
 $secret_key = 'one unique secret key';
 

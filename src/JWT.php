@@ -30,6 +30,8 @@ class JWT {
 	 * Dynamic payload
 	 * 
 	 * Most likely will change with each release
+	 * 
+	 * @var array
 	 */
 	const dynamic_payload = [
 		'expiresIn'
