@@ -166,7 +166,7 @@ class JWT {
 
 		$base64Data = $header.'.'.$payload;
 		$signAlgo = strtoupper((!empty($base64Header['alg'])) ? $base64Header['alg'] : 'HS256');
-		$funcAlgo = constant('Algorithms::'.$signAlgo)[0];
+		$funcAlgo = constant('\Vudev\JsonWebToken\Algorithms::'.$signAlgo)[0];
 
 		switch ($funcAlgo) {
 			case 'hash_hmac':
@@ -245,7 +245,7 @@ class JWT {
 	 */
 	protected function setSecret($secret)
 	{
-		$funcAlgo = constant('Algorithms::'.$this->hash_algo)[0];
+		$funcAlgo = constant('\Vudev\JsonWebToken\Algorithms::'.$this->hash_algo)[0];
 
 		switch ($funcAlgo) {
 			case 'hash_hmac':
