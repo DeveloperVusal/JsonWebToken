@@ -2,8 +2,6 @@
 
 namespace Vudev\JsonWebToken\Algorithm;
 
-use Vudev\JsonWebToken\JWT;
-
 /**
  * Class for Hash hmac algorithms
  */
@@ -23,7 +21,7 @@ class HashHmac {
 		$signature = '';
 
 		try {
-			$signature = hash_hmac(JWT::ALGRORITMS[$algo][1], $data, $secret);
+			$signature = hash_hmac(constant('\Vudev\JsonWebToken\Algorithms::'.$algo)[1], $data, $secret);
 		} catch (\Exception $e) {
 			throw new \Exception(sprintf('Signing failed: %s', $e->getMessage()));
 			
@@ -48,7 +46,7 @@ class HashHmac {
 		$sign = '';
 
 		try {
-			$sign = hash_hmac(JWT::ALGRORITMS[$algo][1], $data, $secret);
+			$sign = hash_hmac(constant('\Vudev\JsonWebToken\Algorithms::'.$algo)[1], $data, $secret);
 		} catch (\Exception $e) {
 			throw new \Exception(sprintf('Signing failed: %s', $e->getMessage()));
 		}
