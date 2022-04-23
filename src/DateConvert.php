@@ -34,7 +34,7 @@ class DateConvert {
         foreach ($types as $key => $val) {
             preg_match('/'.$key.'/', $str, $matches);
 
-            if ($matches[0]) {
+            if (isset($matches[0]) && $matches[0]) {
                 $sel_type = $matches[0];
 
                 break;

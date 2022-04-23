@@ -15,18 +15,6 @@ use Vudev\JsonWebToken\DateConvert;
  */
 class JWT {
 	/**
-	 * The constant contains an associative array for algorithms
-	 */
-	const ALGRORITMS = [
-		'HS256' => ['hash_hmac', 'SHA256'],
-		'HS384' => ['hash_hmac', 'SHA384'],
-		'HS512' => ['hash_hmac', 'SHA512'],
-		'RS256' => ['openssl', 'SHA256', OPENSSL_ALGO_SHA256],
-		'RS384' => ['openssl', 'SHA384', OPENSSL_ALGO_SHA384],
-		'RS512' => ['openssl', 'SHA512', OPENSSL_ALGO_SHA512]
-	];
-
-	/**
 	 * Dynamic payload
 	 * 
 	 * Most likely will change with each release
@@ -104,8 +92,8 @@ class JWT {
 
 		$this->hash_algo = strtoupper((!empty($this->header['alg'])) ? $this->header['alg'] : 'HS256');
 
-		if ($options['public_key']) $this->public_key = $options['public_key'];
-		if ($options['private_key']) $this->private_key = $options['private_key'];
+		if (isset($options['public_key']) && $options['public_key']) $this->public_key = $options['public_key'];
+		if (isset($options['public_key']) && $options['private_key']) $this->private_key = $options['private_key'];
 	}
 
 	
@@ -137,7 +125,7 @@ class JWT {
 		$base64_payload = Base64::encode(json_encode($this->payload));
 
 		$token_unsigned = $base64_header.'.'.$base64_payload;
-		$funcAlgo = JWT::ALGRORITMS[$this->hash_algo][0];
+		$funcAlgo = constant('\Vudev\JsonWebToken\Algorithms::'.$this->hash_algo)[0];
 		$signature = '';
 
 		switch ($funcAlgo) {
@@ -178,7 +166,7 @@ class JWT {
 
 		$base64Data = $header.'.'.$payload;
 		$signAlgo = strtoupper((!empty($base64Header['alg'])) ? $base64Header['alg'] : 'HS256');
-		$funcAlgo = JWT::ALGRORITMS[$signAlgo][0];
+		$funcAlgo = constant('Algorithms::'.$signAlgo)[0];
 
 		switch ($funcAlgo) {
 			case 'hash_hmac':
@@ -257,7 +245,7 @@ class JWT {
 	 */
 	protected function setSecret($secret)
 	{
-		$funcAlgo = JWT::ALGRORITMS[$this->hash_algo][0];
+		$funcAlgo = constant('Algorithms::'.$this->hash_algo)[0];
 
 		switch ($funcAlgo) {
 			case 'hash_hmac':

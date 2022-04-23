@@ -2,8 +2,6 @@
 
 namespace Vudev\JsonWebToken\Algorithm;
 
-use Vudev\JsonWebToken\JWT;
-
 /**
  * Class for OpenSSL algorithms
  */
@@ -23,7 +21,7 @@ class OpenSSL {
 		$signature = '';
 
 		try {
-			$sign = openssl_sign($data, $signature, $privateKey, JWT::ALGRORITMS[$algo][3]);
+			$sign = openssl_sign($data, $signature, $privateKey, constant('\Vudev\JsonWebToken\Algorithms::'.$algo)[2]);
 		} catch (\Exception $e) {
 			throw new \Exception(sprintf('Signing failed: %s', $e->getMessage()));
 		}
