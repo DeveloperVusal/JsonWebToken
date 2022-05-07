@@ -189,7 +189,7 @@ class JWT {
 	 * @access public
 	 * @return array
 	 */
-	public function json($token)
+	public function json($token): array
 	{
 		list($header, $payload) = explode('.', $token);
 
