@@ -183,6 +183,23 @@ class JWT {
 	}
 
 	/**
+	 * Get JSON data from a token (to array)
+	 * 
+	 * @param string $token
+	 * @access public
+	 * @return array
+	 */
+	public function json($token)
+	{
+		list($header, $payload) = explode('.', $token);
+
+		return [
+			'header' => json_decode(Base64::decode($header), true),
+			'payload' => json_decode(Base64::decode($payload), true)
+		];
+	}
+
+	/**
 	 * Update property payloads
 	 * 
 	 * @param array $payload
