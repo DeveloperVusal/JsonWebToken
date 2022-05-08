@@ -1,7 +1,7 @@
 {
 	"name": "vudev/jsonwebtoken",
 	"description": "This library is designed to generate JWT tokens.",
-	"version": "v0.0.6",
+	"version": "v0.0.7",
 	"readme": "./README.md",
     "license": "MIT",
     "minimum-stability": "stable",
