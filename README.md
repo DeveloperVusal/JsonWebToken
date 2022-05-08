@@ -55,7 +55,7 @@ $jwt = new JWT([
 
 <br>
 
-## Example 1 — Creating a pair tokens with hash_hmac
+## Creating a pair tokens with hash_hmac
 ```php
 $secret_key = 'one unique secret key';
 
