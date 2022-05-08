@@ -28,7 +28,7 @@ class OpenSSL {
 
 		if (!$sign) return 'Signing false'.PHP_EOL;
 
-		return $signature;
+		return bin2hex($signature);
 	}
 	
 	/**
@@ -43,7 +43,7 @@ class OpenSSL {
 	 * @return string
 	 */
 	public static function verifySignature($algo, $data, $publicKey, $signature): string
-	{
-		return (openssl_verify($data, $signature, $publicKey, $algo)) ? true : false;
+	{		
+		return (openssl_verify($data, hex2bin($signature), $publicKey, constant('\Vudev\JsonWebToken\Algorithms::'.$algo)[2])) ? true : false;
 	}
 }

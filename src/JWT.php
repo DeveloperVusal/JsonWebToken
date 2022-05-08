@@ -83,7 +83,7 @@ class JWT {
 	 * @access public
 	 * @return void
 	 */
-	public function __construct(array $options)
+	public function __construct(array $options = null)
 	{
 		if (isset($options['header']) && sizeof($options['header'])) $this->header = $options['header'];
 
@@ -92,8 +92,7 @@ class JWT {
 
 		$this->hash_algo = strtoupper((!empty($this->header['alg'])) ? $this->header['alg'] : 'HS256');
 
-		if (isset($options['public_key']) && $options['public_key']) $this->public_key = $options['public_key'];
-		if (isset($options['public_key']) && $options['private_key']) $this->private_key = $options['private_key'];
+		if (isset($options['private_key']) && $options['private_key']) $this->private_key = $options['private_key'];
 	}
 
 	
@@ -111,6 +110,7 @@ class JWT {
 		if (isset($options['payload']) && sizeof($options['payload'])) $this->setPayload($options['payload']);
 		if (isset($options['header']) && sizeof($options['header'])) $this->setHeader($options['header']);
 		if (isset($options['secret']) && sizeof($options['secret'])) $this->setSecret($options['secret']);
+		if (isset($options['private_key']) && sizeof($options['private_key'])) $this->setSecret($options['private_key']);
 
 		$exp = (!empty($this->payload['exp'])) ? $this->payload['exp'] : (time() + (60 * 30));
 		
@@ -146,10 +146,11 @@ class JWT {
 	 * Verify Tokens
 	 * 
 	 * @param string $token
+	 * @param string $key Secret or Public key
 	 * @access public
 	 * @return boolean
 	 */
-	public function verifyToken($token): bool
+	public function verifyToken($token, $key = null): bool
 	{
 		list($header, $payload, $signature) = explode('.', $token);
 
@@ -170,11 +171,11 @@ class JWT {
 
 		switch ($funcAlgo) {
 			case 'hash_hmac':
-				$verifySign = HashHmac::verifySignature($signAlgo, $base64Data, $this->secret, $signature);
+				$verifySign = HashHmac::verifySignature($signAlgo, $base64Data, $key, $signature);
 
 				break;
 			case 'openssl':
-				$verifySign = OpenSSL::verifySignature($signAlgo, $base64Data, $this->public_key, $signature);
+				$verifySign = OpenSSL::verifySignature($signAlgo, $base64Data, $key, $signature);
 
 				break;
 		}
@@ -206,7 +207,7 @@ class JWT {
 	 * @access protected
 	 * @return void
 	 */
-	protected function setPayload(array $payload)
+	protected function setPayload(array $payload): void
 	{
 		$searchs = [];
 
@@ -230,7 +231,7 @@ class JWT {
 	 * @access protected
 	 * @return void
 	 */
-	protected function setHeader(array $header)
+	protected function setHeader(array $header): void
 	{
 		$searchs = [];
 
@@ -256,21 +257,21 @@ class JWT {
 	/**
 	 * Update property secret
 	 * 
-	 * @param mixed $secret
+	 * @param string $key
 	 * @access protected
 	 * @return void
 	 */
-	protected function setSecret($secret)
+	protected function setSecret($key): void
 	{
 		$funcAlgo = constant('\Vudev\JsonWebToken\Algorithms::'.$this->hash_algo)[0];
 
 		switch ($funcAlgo) {
 			case 'hash_hmac':
-				$this->secret = $secret;
+				$this->secret = $key;
 
 				break;
 			case 'openssl':
-				$this->private_key = $secret;
+				$this->private_key = $key;
 
 				break;
 		}
